@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "es2019",
+    "lib": ["es6", "dom", "es2019"],
+    "module": "commonjs",
+    "outDir": "./build",
+    "rootDir": "./",
+    "moduleResolution": "node",
+    "baseUrl": "./",
+    "paths": {
+      "@root/*": ["src/*"],
+      "@utils/*": ["src/utils/*"]
+      },
+      "strict": true,
+      "strictPropertyInitialization": true,
+      "esModuleInterop": true,
+      "forceConsistentCasingInFileNames": true,
+      "skipLibCheck": true
+  },
+  "exclude": ["node_modules"]
+}
