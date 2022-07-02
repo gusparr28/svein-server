@@ -10,12 +10,12 @@
     "paths": {
       "@root/*": ["src/*"],
       "@utils/*": ["src/utils/*"]
-      },
-      "strict": true,
-      "strictPropertyInitialization": true,
-      "esModuleInterop": true,
-      "forceConsistentCasingInFileNames": true,
-      "skipLibCheck": true
+    },
+    "strict": true,
+    "strictPropertyInitialization": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
   },
   "exclude": ["node_modules"]
 }
