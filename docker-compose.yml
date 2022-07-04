@@ -1,0 +1,17 @@
+version: "3"
+services:
+  server:
+    env_file: .env-compose
+    container_name: svein-server
+    build: .
+    ports:
+      - "4000:3000"
+    depends_on:
+      - database
+  database:
+    container_name: svein-database
+    environment:
+      MONGODB_URI: "$MONGODB_URI"
+    image: mongo
+    ports:
+      - "27018:27017"

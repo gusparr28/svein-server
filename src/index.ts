@@ -1,18 +1,12 @@
-import Fastify from 'fastify';
+import { app } from './app';
+import './database';
+import './api/index';
 
-const fastify = Fastify({
-  logger: true,
-});
-
-const start = async () => {
+(async (): Promise<void> => {
   try {
-    await fastify.listen({ port: 3000 });
+    await app.listen({ port: 3000 });
   } catch (err) {
-    fastify.log.error(err);
+    app.log.error(err);
     process.exit(1);
   }
-};
-
-start();
-
-export default fastify;
+})();

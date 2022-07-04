@@ -1,12 +1,14 @@
-import { IRoutes } from '@root/interfaces/routes';
-import { FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyReply } from 'fastify';
+import UsersHandler from '../../handlers/users/UsersHandler';
+import { app } from '../../../app';
 
-const routes: IRoutes[] = [
-  {
-    url: '/users',
-    method: 'GET',
-    handler: (request: FastifyRequest, reply: FastifyReply): FastifyReply => reply.send('users'),
-  },
-];
+const usersHandler = new UsersHandler();
 
-export default routes;
+const userRoutes = async () => {
+  app.get('/users', async (_, reply: FastifyReply) => {
+    const users = await usersHandler.getUsers();
+    reply.code(200).send(users);
+  });
+};
+
+export { userRoutes };
