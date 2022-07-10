@@ -1,17 +1,17 @@
+import { User } from '@root/svein/users/persistence/entities/users/UserEntity';
+import { IUserRepository } from '@root/svein/users/persistence/repositories/users/UserRepository.interface';
 import { randomBytes, scrypt } from 'crypto';
 import { promisify } from 'util';
-import { User } from '../persistence/entities/users/UserEntity';
-import { IUserRepository } from '../persistence/repositories/users/UserRepository.interface';
 
 const promisifyScrypt = promisify(scrypt);
 
-export default class UserService {
+export default class AuthService {
   constructor(private readonly userRepo: IUserRepository) { }
 
   async save(user: User): Promise<User> {
     const salt = randomBytes(8).toString('hex');
 
-    const hash = (await promisifyScrypt(user.password, salt, 32)) as Buffer;
+    const hash = (await promisifyScrypt(user.password, salt, 16)) as Buffer;
 
     const hashedPassword = `${salt}.${hash.toString('hex')}`;
 

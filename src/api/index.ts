@@ -1,12 +1,11 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { app } from '../app';
 
-import { userRoutes } from './routes/users/users';
+import { authRoutes } from './routes/auth';
 
-app.register(userRoutes);
+app.register(authRoutes);
 
 app.register(async () => {
-  // default route
   app.get('/', async (request: FastifyRequest, reply: FastifyReply) => {
     reply.code(200).send({
       status: 200,
@@ -14,7 +13,6 @@ app.register(async () => {
     });
   });
 
-  // health route
   app.get('/health', async (_, reply: FastifyReply) => {
     reply.code(200).send({
       status: 200,
@@ -22,7 +20,6 @@ app.register(async () => {
     });
   });
 
-  // get route not found
   app.get('*', async (_, reply: FastifyReply) => {
     reply.code(404).send({
       status: 404,
@@ -30,7 +27,6 @@ app.register(async () => {
     });
   });
 
-  // post route not found
   app.post('*', async (_, reply: FastifyReply) => {
     reply.code(404).send({
       status: 404,
@@ -38,7 +34,6 @@ app.register(async () => {
     });
   });
 
-  // patch route not found
   app.patch('*', async (_, reply: FastifyReply) => {
     reply.code(404).send({
       status: 404,
@@ -46,7 +41,6 @@ app.register(async () => {
     });
   });
 
-  // put route not found
   app.put('*', async (_, reply: FastifyReply) => {
     reply.code(404).send({
       status: 404,
@@ -54,7 +48,6 @@ app.register(async () => {
     });
   });
 
-  // delete route not found
   app.delete('*', async (_, reply: FastifyReply) => {
     reply.code(404).send({
       status: 404,
