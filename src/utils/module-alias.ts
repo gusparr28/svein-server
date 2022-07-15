@@ -1,10 +1,11 @@
 import moduleAlias from 'module-alias';
 import path from 'path';
+import { environmentVariables } from './loadEnvVariables';
 
-const env = process.env.NODE_ENV;
+const { NODE_ENV } = environmentVariables;
 
 const pathGen = (folder: string): string => (
-  env === 'development'
+  NODE_ENV === 'development'
     ? path.resolve(process.cwd(), 'src', folder)
     : path.resolve(process.cwd(), 'build', 'src', folder));
 

@@ -1,6 +1,7 @@
 import { port, app } from './app';
 import './database';
 import './api/index';
+import './utils/plugins';
 
 (async (): Promise<void> => {
   try {

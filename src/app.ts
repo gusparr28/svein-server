@@ -1,14 +1,14 @@
 import Fastify, { FastifyInstance } from 'fastify';
-import './database';
+import { environmentVariables } from './utils/loadEnvVariables';
 
-const environment = process.env.NODE_ENV;
+const { NODE_ENV, PORT } = environmentVariables;
 
-export const port = process.env.PORT;
+export const port = PORT;
 
 export const app: FastifyInstance = Fastify({
   logger: {
     transport:
-      environment === 'development'
+      NODE_ENV === 'development'
         ? {
           target: 'pino-pretty',
           options: {

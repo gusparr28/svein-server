@@ -1,6 +1,5 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { app } from '../app';
-
 import { authRoutes } from './routes/auth';
 
 app.register(authRoutes);

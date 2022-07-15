@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
+import { environmentVariables } from './utils/loadEnvVariables';
 
-const { MONGODB_URI } = process.env;
+const { MONGODB_URI } = environmentVariables;
 
 (async (uri: string): Promise<void> => {
   try {

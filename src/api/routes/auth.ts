@@ -1,8 +1,8 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { UserDto } from '@root/svein/users/dto/User.dto';
-import { SignUp } from '@root/utils/types/auth';
+import { UserDto } from '@root/svein/users/dto/user.dto';
+import { SignIn, SignUp } from '@root/utils/types/auth';
+import AuthHandler from '../handlers/auth/auth.handler';
 import { app } from '../../app';
-import AuthHandler from '../handlers/auth/AuthHandler';
 
 const authHandler = AuthHandler.instance();
 
@@ -15,7 +15,7 @@ const authRoutes = async () => {
     const { entity } = request.body;
 
     try {
-      const { id, username, email } = await authHandler.save(entity);
+      const { id, username, email } = await authHandler.signUp(entity);
 
       const userDto: UserDto = {
         id,
@@ -25,12 +25,36 @@ const authRoutes = async () => {
 
       reply.code(200).send({
         status: 200,
-        data: userDto,
+        resource: userDto,
       });
-    } catch (e) {
+    } catch (e: any) {
       reply.code(500).send({
         status: 500,
-        error: e,
+        error: e.message,
+      });
+    }
+  });
+
+  app.post('/auth/signin', async (
+    request: FastifyRequest<{
+      Body: {
+        entity: SignIn
+      }
+    }>,
+    reply: FastifyReply,
+  ) => {
+    const { entity } = request.body;
+
+    try {
+      const token = await authHandler.signIn(entity);
+      reply.code(200).send({
+        status: 200,
+        token,
+      });
+    } catch (e: any) {
+      reply.code(500).send({
+        status: 500,
+        error: e.message,
       });
     }
   });
