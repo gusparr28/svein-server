@@ -6,7 +6,8 @@ const config: Config.InitialOptions = {
   preset: 'ts-jest',
   testTimeout: 15000,
   watchPlugins: ['./tests/test-utils.ts'],
-  // setupFilesAfterEnv: ['./jest.setup.ts'],
+  setupFiles: ['./.jest/environmentVariables.ts'],
+  setupFilesAfterEnv: ['./jest.setup.ts'],
   // globalSetup: './jest.globalSetup.ts',
   // globalTeardown: './jest.globalTeardown.ts',
 };

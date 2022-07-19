@@ -1,7 +1,10 @@
 import Fastify, { FastifyInstance } from 'fastify';
+import bcrypt from 'fastify-bcrypt';
+import cors from '@fastify/cors';
+import jwt from '@fastify/jwt';
 import { environmentVariables } from './utils/loadEnvVariables';
 
-const { NODE_ENV, PORT } = environmentVariables;
+const { NODE_ENV, PORT, JWT_SECRET } = environmentVariables;
 
 export const port = PORT;
 
@@ -17,4 +20,17 @@ export const app: FastifyInstance = Fastify({
         }
         : undefined,
   },
+});
+
+// plugins
+app.register(bcrypt, {
+  saltWorkFactor: 12,
+});
+
+app.register(cors, {
+  origin: true,
+});
+
+app.register(jwt, {
+  secret: JWT_SECRET,
 });

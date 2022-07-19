@@ -1,13 +1,12 @@
-import { FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { UserDto } from '@root/svein/users/dto/user.dto';
 import { SignIn, SignUp } from '@root/utils/types/auth';
 import AuthHandler from '../handlers/auth/auth.handler';
-import { app } from '../../app';
 
 const authHandler = AuthHandler.instance();
 
-const authRoutes = async () => {
-  app.post('/auth/signup', async (request: FastifyRequest<{
+const authRoutes = (fastify: FastifyInstance) => {
+  fastify.post('/auth/signup', async (request: FastifyRequest<{
     Body: {
       entity: SignUp
     }
@@ -35,7 +34,7 @@ const authRoutes = async () => {
     }
   });
 
-  app.post('/auth/signin', async (
+  fastify.post('/auth/signin', async (
     request: FastifyRequest<{
       Body: {
         entity: SignIn
