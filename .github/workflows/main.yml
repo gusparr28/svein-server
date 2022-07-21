@@ -21,6 +21,14 @@ jobs:
       with:
         node-version: 16.x
         cache: npm
+    - name: Reading secrets
+      run: |
+        if [ "$JWT_SECRET" == "secret" ]
+        then
+          echo "Got secret"
+        fi
+      env:
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
     - name: Installing dependencies
       run: npm ci
     - name: Building project
