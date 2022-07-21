@@ -10,5 +10,7 @@ export const environmentVariables = {
   NODE_ENV: loadEnvVariables('NODE_ENV'),
   JWT_SECRET: loadEnvVariables('JWT_SECRET'),
   PORT: loadEnvVariables('PORT'),
-  MONGODB_URI: loadEnvVariables('MONGODB_URI'),
+  LOCAL_MONGODB_URI: loadEnvVariables('LOCAL_MONGODB_URI'),
+  STAG_MONGODB_URI: loadEnvVariables('STAG_MONGODB_URI'),
+  PROD_MONGODB_URI: loadEnvVariables('PROD_MONGODB_URI'),
 };
