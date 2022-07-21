@@ -1,6 +1,7 @@
 import type { Config } from '@jest/types';
 
 const config: Config.InitialOptions = {
+  roots: ['<rootDir>/src'],
   verbose: true,
   bail: 1,
   preset: 'ts-jest',
