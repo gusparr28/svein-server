@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es2019",
-    "lib": ["es6", "dom", "es2019"],
+    "target": "ES2021",
+    "lib": ["ES2021"],
     "module": "commonjs",
     "outDir": "./build",
     "rootDir": "./",
@@ -15,7 +15,8 @@
     "strictPropertyInitialization": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "experimentalDecorators": true
   },
   "exclude": ["node_modules"]
 }

@@ -1,54 +1,59 @@
-import { FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+// import { verifyJwt } from '../utils/hooks';
 import { app } from '../app';
-
 import { authRoutes } from './routes/auth';
 
-app.register(authRoutes);
+// unprotected routes
+app.register(async (fastify: FastifyInstance) => {
+  authRoutes(fastify);
+});
 
-app.register(async () => {
-  app.get('/', async (request: FastifyRequest, reply: FastifyReply) => {
+app.register(async (fastify: FastifyInstance) => {
+  // verifyJwt(fastify);
+
+  fastify.get('/', (request: FastifyRequest, reply: FastifyReply) => {
     reply.code(200).send({
       status: 200,
       message: `you just found my server and now I know your IP: ${request.ip}`,
     });
   });
 
-  app.get('/health', async (_, reply: FastifyReply) => {
+  fastify.get('/health', (_, reply: FastifyReply) => {
     reply.code(200).send({
       status: 200,
       message: 'your health is okay',
     });
   });
 
-  app.get('*', async (_, reply: FastifyReply) => {
+  fastify.get('*', (_, reply: FastifyReply) => {
     reply.code(404).send({
       status: 404,
       message: 'oops, where you going?',
     });
   });
 
-  app.post('*', async (_, reply: FastifyReply) => {
+  fastify.post('*', (_, reply: FastifyReply) => {
     reply.code(404).send({
       status: 404,
       message: 'oops, where you going?',
     });
   });
 
-  app.patch('*', async (_, reply: FastifyReply) => {
+  fastify.patch('*', (_, reply: FastifyReply) => {
     reply.code(404).send({
       status: 404,
       message: 'oops, where you going?',
     });
   });
 
-  app.put('*', async (_, reply: FastifyReply) => {
+  fastify.put('*', (_, reply: FastifyReply) => {
     reply.code(404).send({
       status: 404,
       message: 'oops, where you going?',
     });
   });
 
-  app.delete('*', async (_, reply: FastifyReply) => {
+  fastify.delete('*', (_, reply: FastifyReply) => {
     reply.code(404).send({
       status: 404,
       message: 'oops, where you going?',

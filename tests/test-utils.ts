@@ -1,4 +1,4 @@
 import dotenv from 'dotenv';
-import '@root/utils/module-alias';
+import '../src/utils/module-alias';
 
 dotenv.config();
