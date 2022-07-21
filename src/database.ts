@@ -1,9 +1,8 @@
 import mongoose from 'mongoose';
-import { environmentVariables } from './utils/loadEnvVariables';
 
 const {
   NODE_ENV, LOCAL_MONGODB_URI, PROD_MONGODB_URI, STAG_MONGODB_URI,
-} = environmentVariables;
+} = process.env;
 
 (async (uri: string): Promise<void> => {
   try {
@@ -13,6 +12,6 @@ const {
     console.log(e);
   }
 })(NODE_ENV === 'development'
-  ? LOCAL_MONGODB_URI
+  ? LOCAL_MONGODB_URI!
   : NODE_ENV === 'staging'
-    ? STAG_MONGODB_URI : PROD_MONGODB_URI);
+    ? STAG_MONGODB_URI! : PROD_MONGODB_URI!);
