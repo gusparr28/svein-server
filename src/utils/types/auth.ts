@@ -5,7 +5,7 @@ export type SignUp = {
 };
 
 export type SignIn = {
-  email: string;
-  username: string;
+  email?: string;
+  username?: string;
   password: string;
 };

@@ -1,8 +1,7 @@
 import moduleAlias from 'module-alias';
 import path from 'path';
-import { environmentVariables } from './loadEnvVariables';
 
-const { NODE_ENV } = environmentVariables;
+const { NODE_ENV } = process.env;
 
 const pathGen = (folder: string): string => (
   NODE_ENV === 'development'
