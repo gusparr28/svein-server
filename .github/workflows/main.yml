@@ -14,6 +14,8 @@ on:
 jobs:
   unit-test:
     runs-on: ubuntu-latest
+    env:
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
     steps:
     - uses: actions/checkout@v3
     - name: Setup Node 16.x
@@ -21,14 +23,6 @@ jobs:
       with:
         node-version: 16.x
         cache: npm
-    - name: Reading secrets
-      run: |
-        if [ "$JWT_SECRET" == "secret" ]
-        then
-          echo "Got secret"
-        fi
-      env:
-        JWT_SECRET: ${{ secrets.JWT_SECRET }}
     - name: Installing dependencies
       run: npm ci
     - name: Building project
