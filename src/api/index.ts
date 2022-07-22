@@ -1,4 +1,5 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import Schemas from '../swagger/schemas';
 // import { verifyJwt } from '../utils/hooks';
 import { app } from '../app';
 import { authRoutes } from './routes/auth';
@@ -11,49 +12,73 @@ app.register(async (fastify: FastifyInstance) => {
 app.register(async (fastify: FastifyInstance) => {
   // verifyJwt(fastify);
 
-  fastify.get('/', (request: FastifyRequest, reply: FastifyReply) => {
+  fastify.get('/', {
+    schema: Schemas.emptyGet.schema,
+  }, (request: FastifyRequest, reply: FastifyReply) => {
     reply.code(200).send({
       status: 200,
       message: `you just found my server and now I know your IP: ${request.ip}`,
     });
   });
 
-  fastify.get('/health', (_, reply: FastifyReply) => {
+  fastify.get('/health', {
+    schema: Schemas.health.schema,
+  }, (_, reply: FastifyReply) => {
     reply.code(200).send({
       status: 200,
       message: 'your health is okay',
     });
   });
 
-  fastify.get('*', (_, reply: FastifyReply) => {
+  fastify.get('*', {
+    schema: {
+      hide: true,
+    },
+  }, (_, reply: FastifyReply) => {
     reply.code(404).send({
       status: 404,
       message: 'oops, where you going?',
     });
   });
 
-  fastify.post('*', (_, reply: FastifyReply) => {
+  fastify.post('*', {
+    schema: {
+      hide: true,
+    },
+  }, (_, reply: FastifyReply) => {
     reply.code(404).send({
       status: 404,
       message: 'oops, where you going?',
     });
   });
 
-  fastify.patch('*', (_, reply: FastifyReply) => {
+  fastify.patch('*', {
+    schema: {
+      hide: true,
+    },
+  }, (_, reply: FastifyReply) => {
     reply.code(404).send({
       status: 404,
       message: 'oops, where you going?',
     });
   });
 
-  fastify.put('*', (_, reply: FastifyReply) => {
+  fastify.put('*', {
+    schema: {
+      hide: true,
+    },
+  }, (_, reply: FastifyReply) => {
     reply.code(404).send({
       status: 404,
       message: 'oops, where you going?',
     });
   });
 
-  fastify.delete('*', (_, reply: FastifyReply) => {
+  fastify.delete('*', {
+    schema: {
+      hide: true,
+    },
+  }, (_, reply: FastifyReply) => {
     reply.code(404).send({
       status: 404,
       message: 'oops, where you going?',
