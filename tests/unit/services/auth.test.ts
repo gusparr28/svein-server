@@ -50,6 +50,7 @@ describe('Auth Service', () => {
     const token = await authService.signIn({
       email,
       password,
+      username: '',
     });
 
     expect(token).toBeDefined();
@@ -72,6 +73,8 @@ describe('Auth Service', () => {
 
     await expect(authService.signIn({
       password,
+      email: '',
+      username: '',
     })).rejects.toThrow('Cannot login without username or email');
   });
 
@@ -83,6 +86,7 @@ describe('Auth Service', () => {
     await expect(authService.signIn({
       email,
       password: '1235',
+      username: '',
     })).rejects.toThrow('Invalid password');
   });
 });

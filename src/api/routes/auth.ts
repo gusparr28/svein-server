@@ -16,11 +16,6 @@ const authRoutes = (fastify: FastifyInstance) => {
     const { entity } = request.body;
     try {
       const user = await authHandler.signUp(Schemas.auth.signUp.schema, entity);
-
-      console.log('user', user);
-
-      console.log('dto', user.toDto());
-
       reply.code(200).send({
         status: 200,
         resource: user,

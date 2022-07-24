@@ -1,4 +1,4 @@
-import { User } from '@root/svein/users/persistence/entities/user.entity';
+import { User } from '@root/svein/users/domain/model/User';
 import { IUserRepository } from '@root/svein/users/persistence/users/user.repository.interface';
 
 export class MockUserRepository implements IUserRepository {
