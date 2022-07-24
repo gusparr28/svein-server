@@ -1,23 +1,32 @@
 import { IAuthService } from '@root/svein/auth/business/auth.service.interface';
-import { User } from '@root/svein/users/persistence/entities/user.entity';
-import { SignIn, SignUp } from '@root/utils/types/auth';
-import UserRepository from '../../../svein/users/persistence/repositories/users/impl/user.repository';
+import { User } from '@root/svein/users/domain/model/User';
+import { SchemaType } from '@root/swagger/schemas';
+import { RequestUserDto } from '@root/svein/users/domain/user.dto';
+import { IAjvClient } from '../../../clients/ajv/ajv.client.interface';
+import { AjvClient } from '../../../clients/ajv/ajv.client';
+import UserRepository from '../../../svein/users/persistence/users/impl/user.repository';
 import AuthService from '../../../svein/auth/business/auth.service';
 
 export default class AuthHandler {
-  constructor(private readonly authService: IAuthService) { }
+  constructor(
+    private readonly authService: IAuthService,
+    private readonly ajvClient: IAjvClient,
+  ) { }
 
-  async signUp(user: SignUp): Promise<User> {
-    return this.authService.signUp(user);
+  async signUp(schema: SchemaType, userDto: RequestUserDto): Promise<User> {
+    this.ajvClient.validateSchema(schema.body, userDto);
+    return this.authService.signUp(userDto);
   }
 
-  async signIn(user: SignIn): Promise<string | undefined> {
-    return this.authService.signIn(user);
+  async signIn(schema: SchemaType, userDto: RequestUserDto): Promise<string | undefined> {
+    this.ajvClient.validateSchema(schema.body, userDto);
+    return this.authService.signIn(userDto);
   }
 
   public static instance(): AuthHandler {
     const userRepo = new UserRepository();
     const authService = new AuthService(userRepo);
-    return new AuthHandler(authService);
+    const ajvClient = new AjvClient();
+    return new AuthHandler(authService, ajvClient);
   }
 }

@@ -1,8 +1,12 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import Schemas from '../swagger/schemas';
 // import { verifyJwt } from '../utils/hooks';
 import { app } from '../app';
 import { authRoutes } from './routes/auth';
+
+// typebox config
+app.withTypeProvider<TypeBoxTypeProvider>();
 
 // unprotected routes
 app.register(async (fastify: FastifyInstance) => {

@@ -1,5 +1,5 @@
 import { User } from '@root/svein/users/persistence/entities/user.entity';
-import { IUserRepository } from '@root/svein/users/persistence/repositories/users/user.repository.interface';
+import { IUserRepository } from '@root/svein/users/persistence/users/user.repository.interface';
 
 export class MockUserRepository implements IUserRepository {
   public mockUsers: User[] = [];

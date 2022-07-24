@@ -1,5 +1,5 @@
-import UserModel from '../../../model/user.model';
-import { User } from '../../../entities/user.entity';
+import UserModel from '../../model/user.model';
+import { User } from '../../../domain/model/User';
 import { IUserRepository } from '../user.repository.interface';
 
 export default class UserRepository implements IUserRepository {

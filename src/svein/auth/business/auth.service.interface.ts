@@ -1,7 +1,7 @@
-import { User } from '@root/svein/users/persistence/entities/user.entity';
-import { SignIn, SignUp } from '@root/utils/types/auth';
+import { RequestUserDto } from '@root/svein/users/domain/user.dto';
+import { User } from '@root/svein/users/domain/model/User';
 
 export interface IAuthService {
-  signUp(user: SignUp): Promise<User>;
-  signIn(user: SignIn): Promise<string | undefined>;
+  signUp(userDto: RequestUserDto): Promise<User>;
+  signIn(userDto: RequestUserDto): Promise<string | undefined>;
 }

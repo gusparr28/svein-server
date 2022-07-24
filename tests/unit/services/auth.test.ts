@@ -1,7 +1,7 @@
 import { SignUp } from '@root/utils/types/auth';
 import { app } from '../../../src/app';
 import { MockUserRepository } from '../../__mocks__/repositories/mock.user.repository';
-import { IUserRepository } from '../../../src/svein/users/persistence/repositories/users/user.repository.interface';
+import { IUserRepository } from '../../../src/svein/users/persistence/users/user.repository.interface';
 import { IAuthService } from '../../../src/svein/auth/business/auth.service.interface';
 import AuthService from '../../../src/svein/auth/business/auth.service';
 

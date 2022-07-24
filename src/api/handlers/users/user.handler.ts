@@ -1,4 +1,4 @@
-import UserRepository from '../../../svein/users/persistence/repositories/users/impl/user.repository';
+import UserRepository from '../../../svein/users/persistence/users/impl/user.repository';
 import { IUserService } from '../../../svein/users/business/user.service.interface';
 import UserService from '../../../svein/users/business/user.service';
 
