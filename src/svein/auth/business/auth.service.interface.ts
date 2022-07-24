@@ -1,7 +1,7 @@
-import { RequestUserDto } from '@root/svein/users/domain/user.dto';
 import { User } from '@root/svein/users/domain/model/User';
+import { SignIn, SignUp } from '@root/utils/types/auth';
 
 export interface IAuthService {
-  signUp(userDto: RequestUserDto): Promise<User>;
-  signIn(userDto: RequestUserDto): Promise<string | undefined>;
+  signUp(validatedSchema: SignUp): Promise<User>;
+  signIn(validatedSchema: SignIn): Promise<string | undefined>;
 }

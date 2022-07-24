@@ -1,5 +1,5 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
-import { RequestUserDto } from '@root/svein/users/domain/user.dto';
+import { RequestUserDto, toDto } from '../../svein/users/domain/user.dto';
 import Schemas from '../../swagger/schemas';
 import AuthHandler from '../handlers/auth/auth.handler';
 
@@ -18,7 +18,7 @@ const authRoutes = (fastify: FastifyInstance) => {
       const user = await authHandler.signUp(Schemas.auth.signUp.schema, entity);
       reply.code(200).send({
         status: 200,
-        resource: user,
+        resource: toDto(user),
       });
     } catch (e: any) {
       reply.code(500).send({

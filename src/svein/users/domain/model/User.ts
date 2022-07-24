@@ -1,5 +1,3 @@
-import { ResponseUserDto } from '../user.dto';
-
 export class User {
   id: string;
 
@@ -19,13 +17,5 @@ export class User {
     this.email = email;
     this.username = username;
     this.password = password;
-  }
-
-  toDto(): ResponseUserDto {
-    return {
-      id: this.id,
-      email: this.email,
-      username: this.username,
-    };
   }
 }

@@ -1,7 +1,7 @@
 import { User } from '@root/svein/users/domain/model/User';
 import { IUserRepository } from '@root/svein/users/persistence/users/user.repository.interface';
 import { v4 } from 'uuid';
-import { RequestUserDto } from '@root/svein/users/domain/user.dto';
+import { SignIn, SignUp } from '@root/utils/types/auth';
 import { emailRegex } from '../../../utils/emailRegex';
 import { IAuthService } from './auth.service.interface';
 import { app } from '../../../app';
@@ -9,8 +9,8 @@ import { app } from '../../../app';
 export default class AuthService implements IAuthService {
   constructor(private readonly userRepo: IUserRepository) { }
 
-  async signUp(userDto: RequestUserDto): Promise<User> {
-    const { username, email, password } = userDto;
+  async signUp(validatedSchema: SignUp): Promise<User> {
+    const { username, email, password } = validatedSchema;
 
     if (!email.toLowerCase().match(emailRegex)) {
       throw new Error('Invalid email');
@@ -25,8 +25,8 @@ export default class AuthService implements IAuthService {
     });
   }
 
-  async signIn(userDto: RequestUserDto): Promise<string | undefined> {
-    const { email, username, password } = userDto;
+  async signIn(validatedSchema: SignIn): Promise<string | undefined> {
+    const { email, username, password } = validatedSchema;
 
     let token;
 

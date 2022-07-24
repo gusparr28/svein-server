@@ -53,8 +53,12 @@ const Schemas: ISchemas = {
       schema: {
         body: {
           entity: Type.Object({
-            email: Type.String(),
-            username: Type.String(),
+            email: Type.Optional(
+              Type.String(),
+            ),
+            username: Type.Optional(
+              Type.String(),
+            ),
             password: Type.String(),
           }),
         },
