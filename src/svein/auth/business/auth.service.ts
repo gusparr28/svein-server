@@ -1,6 +1,5 @@
 import { User } from '@root/svein/users/domain/model/User';
 import { IUserRepository } from '@root/svein/users/persistence/users/user.repository.interface';
-import { v4 } from 'uuid';
 import { SignIn, SignUp } from '@root/utils/types/auth';
 import { FastifyRequest } from 'fastify';
 import { OAuth2Token } from '@fastify/oauth2';
@@ -46,14 +45,14 @@ export default class AuthService implements IAuthService {
       const foundUser = await this.userRepo.findByEmail(email);
       if (!foundUser) throw new Error('User not registered');
       await this.bcryptClient.compare(password, foundUser.password);
-      token = this.jwtClient.sign(`${foundUser.id}-${v4()}`);
+      token = this.jwtClient.sign(foundUser.id);
     }
 
     if (username) {
       const foundUser = await this.userRepo.findByUsername(username);
       if (!foundUser) throw new Error('User not registered');
       await this.bcryptClient.compare(password, foundUser.password);
-      token = this.jwtClient.sign(`${foundUser.id}-${v4()}`);
+      token = this.jwtClient.sign(foundUser.id);
     }
 
     return token;
