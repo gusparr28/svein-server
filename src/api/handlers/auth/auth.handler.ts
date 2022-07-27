@@ -2,6 +2,10 @@ import { IAuthService } from '@root/svein/auth/business/auth.service.interface';
 import { User } from '@root/svein/users/domain/model/User';
 import { SchemaType } from '@root/swagger/schemas';
 import { RequestUserDto } from '@root/svein/users/domain/user.dto';
+import { FastifyRequest } from 'fastify';
+import { OAuth2Token } from '@fastify/oauth2';
+import { BcryptClient } from '../../../clients/bcrypt/bcrypt.client';
+import { JwtClient } from '../../../clients/jwt/jwt.client';
 import { IAjvClient } from '../../../clients/ajv/ajv.client.interface';
 import { AjvClient } from '../../../clients/ajv/ajv.client';
 import UserRepository from '../../../svein/users/persistence/users/impl/user.repository';
@@ -23,9 +27,19 @@ export default class AuthHandler {
     return this.authService.signIn(userDto);
   }
 
+  async facebookSignIn(request: FastifyRequest): Promise<OAuth2Token> {
+    return this.authService.facebookSignIn(request);
+  }
+
+  async googleSignIn(request: FastifyRequest): Promise<OAuth2Token> {
+    return this.authService.googleSignIn(request);
+  }
+
   public static instance(): AuthHandler {
     const userRepo = new UserRepository();
-    const authService = new AuthService(userRepo);
+    const bcryptClient = new BcryptClient();
+    const jwtClient = new JwtClient();
+    const authService = new AuthService(userRepo, bcryptClient, jwtClient);
     const ajvClient = new AjvClient();
     return new AuthHandler(authService, ajvClient);
   }

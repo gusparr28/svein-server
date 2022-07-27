@@ -2,12 +2,20 @@ import { User } from '@root/svein/users/domain/model/User';
 import { IUserRepository } from '@root/svein/users/persistence/users/user.repository.interface';
 import { v4 } from 'uuid';
 import { SignIn, SignUp } from '@root/utils/types/auth';
+import { FastifyRequest } from 'fastify';
+import { OAuth2Token } from '@fastify/oauth2';
+import { IBcryptClient } from '@root/clients/bcrypt/bcrypt.client.interface';
+import { IJwtClient } from '@root/clients/jwt/jwt.client.interface';
 import { emailRegex } from '../../../utils/emailRegex';
 import { IAuthService } from './auth.service.interface';
 import { app } from '../../../app';
 
 export default class AuthService implements IAuthService {
-  constructor(private readonly userRepo: IUserRepository) { }
+  constructor(
+    private readonly userRepo: IUserRepository,
+    private readonly bcryptClient: IBcryptClient,
+    private readonly jwtClient: IJwtClient,
+  ) { }
 
   async signUp(validatedSchema: SignUp): Promise<User> {
     const { username, email, password } = validatedSchema;
@@ -16,7 +24,7 @@ export default class AuthService implements IAuthService {
       throw new Error('Invalid email');
     }
 
-    const hashedPassword = await app.bcrypt.hash(password);
+    const hashedPassword = await this.bcryptClient.hash(password);
 
     return this.userRepo.save({
       email: email.toLowerCase().trim(),
@@ -37,23 +45,27 @@ export default class AuthService implements IAuthService {
     if (email) {
       const foundUser = await this.userRepo.findByEmail(email);
       if (!foundUser) throw new Error('User not registered');
-      const passwordComparation = await app.bcrypt.compare(password, foundUser.password);
-      if (!passwordComparation) throw new Error('Invalid password');
-      token = app.jwt.sign({
-        token: `${foundUser.id}-${v4()}`,
-      });
+      await this.bcryptClient.compare(password, foundUser.password);
+      token = this.jwtClient.sign(`${foundUser.id}-${v4()}`);
     }
 
     if (username) {
       const foundUser = await this.userRepo.findByUsername(username);
       if (!foundUser) throw new Error('User not registered');
-      const passwordComparation = await app.bcrypt.compare(password, foundUser.password);
-      if (!passwordComparation) throw new Error('Invalid password');
-      token = app.jwt.sign({
-        token: `${foundUser.id}-${v4()}`,
-      });
+      await this.bcryptClient.compare(password, foundUser.password);
+      token = this.jwtClient.sign(`${foundUser.id}-${v4()}`);
     }
 
     return token;
+  }
+
+  async facebookSignIn(request: FastifyRequest): Promise<OAuth2Token> {
+    const tokenData = await app.facebookOAuth2.getAccessTokenFromAuthorizationCodeFlow(request);
+    return tokenData;
+  }
+
+  async googleSignIn(request: FastifyRequest): Promise<OAuth2Token> {
+    const tokenData = await app.googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(request);
+    return tokenData;
   }
 }

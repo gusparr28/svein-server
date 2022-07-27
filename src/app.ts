@@ -2,13 +2,21 @@ import Fastify, { FastifyInstance } from 'fastify';
 import bcrypt from 'fastify-bcrypt';
 import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
-import oauth2 from '@fastify/oauth2';
+import oauth2, { OAuth2Namespace } from '@fastify/oauth2';
 import fastifySwagger from '@fastify/swagger';
 import fastifyBasicAuth from '@fastify/basic-auth';
 import validate from './swagger/validate';
 
+declare module 'fastify' {
+  interface FastifyInstance {
+    facebookOAuth2: OAuth2Namespace;
+    googleOAuth2: OAuth2Namespace;
+  }
+}
+
 const {
-  NODE_ENV, PORT, JWT_SECRET, STAGING_URL, PRODUCTION_URL,
+  NODE_ENV, PORT, JWT_SECRET, STAGING_URL, PRODUCTION_URL, FACEBOOK_ID, FACEBOOK_SECRET, GOOGLE_ID,
+  GOOGLE_SECRET,
 } = process.env;
 
 const validatedHost: string = NODE_ENV === 'development' ? `localhost:${PORT!}` : NODE_ENV === 'staging'
@@ -72,16 +80,32 @@ app.register(fastifySwagger, {
   },
 });
 
+// oauth2
+
 app.register(oauth2, {
   name: 'facebookOAuth2',
+  scope: [],
   credentials: {
     client: {
-      id: '',
-      secret: '',
+      id: FACEBOOK_ID!,
+      secret: FACEBOOK_SECRET!,
     },
     auth: oauth2.FACEBOOK_CONFIGURATION,
   },
-  startRedirectPath: '/login/facebook',
-  callbackUri: 'http://localhost:3000/login/facebook/callback',
-  scope: [],
+  startRedirectPath: '/auth/signin/facebook',
+  callbackUri: 'http://localhost:3000/auth/signin/facebook/callback',
+});
+
+app.register(oauth2, {
+  name: 'googleOAuth2',
+  scope: ['profile', 'email'],
+  credentials: {
+    client: {
+      id: GOOGLE_ID!,
+      secret: GOOGLE_SECRET!,
+    },
+    auth: oauth2.GOOGLE_CONFIGURATION,
+  },
+  startRedirectPath: '/auth/signin/google',
+  callbackUri: 'http://localhost:3000/auth/signin/google/callback',
 });

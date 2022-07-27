@@ -1,5 +1,9 @@
 import { SignUp } from '@root/utils/types/auth';
+import { IBcryptClient } from '@root/clients/bcrypt/bcrypt.client.interface';
+import { IJwtClient } from '@root/clients/jwt/jwt.client.interface';
 import { app } from '../../../src/app';
+import { BcryptClient } from '../../../src/clients/bcrypt/bcrypt.client';
+import { JwtClient } from '../../../src/clients/jwt/jwt.client';
 import { MockUserRepository } from '../../__mocks__/repositories/mock.user.repository';
 import { IUserRepository } from '../../../src/svein/users/persistence/users/user.repository.interface';
 import { IAuthService } from '../../../src/svein/auth/business/auth.service.interface';
@@ -11,6 +15,8 @@ describe('Auth Service', () => {
   let hashedPassword: string;
 
   let mockUserRepository: IUserRepository;
+  let bcryptClient: IBcryptClient;
+  let jwtClient: IJwtClient;
   let authService: IAuthService;
 
   beforeAll(async () => {
@@ -19,7 +25,9 @@ describe('Auth Service', () => {
 
   beforeEach(() => {
     mockUserRepository = new MockUserRepository();
-    authService = new AuthService(mockUserRepository);
+    bcryptClient = new BcryptClient();
+    jwtClient = new JwtClient();
+    authService = new AuthService(mockUserRepository, bcryptClient, jwtClient);
 
     userToSignUp = {
       email: 'test@gmail.com',
