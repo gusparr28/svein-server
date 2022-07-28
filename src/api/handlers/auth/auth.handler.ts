@@ -1,9 +1,9 @@
-import { IAuthService } from '@root/svein/auth/business/auth.service.interface';
+import { IAuthService, MappedUserInfo } from '@root/svein/auth/business/auth.service.interface';
 import { User } from '@root/svein/users/domain/model/User';
 import { SchemaType } from '@root/swagger/schemas';
 import { RequestUserDto } from '@root/svein/users/domain/user.dto';
 import { FastifyRequest } from 'fastify';
-import { OAuth2Token } from '@fastify/oauth2';
+import { AxiosClient } from '../../../clients/axios/axios.client';
 import { BcryptClient } from '../../../clients/bcrypt/bcrypt.client';
 import { JwtClient } from '../../../clients/jwt/jwt.client';
 import { IAjvClient } from '../../../clients/ajv/ajv.client.interface';
@@ -27,11 +27,11 @@ export default class AuthHandler {
     return this.authService.signIn(userDto);
   }
 
-  async facebookSignIn(request: FastifyRequest): Promise<OAuth2Token> {
+  async facebookSignIn(request: FastifyRequest): Promise<MappedUserInfo> {
     return this.authService.facebookSignIn(request);
   }
 
-  async googleSignIn(request: FastifyRequest): Promise<OAuth2Token> {
+  async googleSignIn(request: FastifyRequest): Promise<MappedUserInfo> {
     return this.authService.googleSignIn(request);
   }
 
@@ -39,7 +39,8 @@ export default class AuthHandler {
     const userRepo = new UserRepository();
     const bcryptClient = new BcryptClient();
     const jwtClient = new JwtClient();
-    const authService = new AuthService(userRepo, bcryptClient, jwtClient);
+    const axiosClient = new AxiosClient();
+    const authService = new AuthService(userRepo, bcryptClient, jwtClient, axiosClient);
     const ajvClient = new AjvClient();
     return new AuthHandler(authService, ajvClient);
   }

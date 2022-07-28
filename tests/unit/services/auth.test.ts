@@ -1,6 +1,8 @@
 import { SignUp } from '@root/utils/types/auth';
 import { IBcryptClient } from '@root/clients/bcrypt/bcrypt.client.interface';
 import { IJwtClient } from '@root/clients/jwt/jwt.client.interface';
+import { IAxiosClient } from '@root/clients/axios/axios.client.interface';
+import { AxiosClient } from '../../../src/clients/axios/axios.client';
 import { app } from '../../../src/app';
 import { BcryptClient } from '../../../src/clients/bcrypt/bcrypt.client';
 import { JwtClient } from '../../../src/clients/jwt/jwt.client';
@@ -17,6 +19,7 @@ describe('Auth Service', () => {
   let mockUserRepository: IUserRepository;
   let bcryptClient: IBcryptClient;
   let jwtClient: IJwtClient;
+  let axiosClient: IAxiosClient;
   let authService: IAuthService;
 
   beforeAll(async () => {
@@ -27,7 +30,8 @@ describe('Auth Service', () => {
     mockUserRepository = new MockUserRepository();
     bcryptClient = new BcryptClient();
     jwtClient = new JwtClient();
-    authService = new AuthService(mockUserRepository, bcryptClient, jwtClient);
+    axiosClient = new AxiosClient();
+    authService = new AuthService(mockUserRepository, bcryptClient, jwtClient, axiosClient);
 
     userToSignUp = {
       email: 'test@gmail.com',

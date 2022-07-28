@@ -2,11 +2,11 @@ import { User } from '@root/svein/users/domain/model/User';
 import { IUserRepository } from '@root/svein/users/persistence/users/user.repository.interface';
 import { SignIn, SignUp } from '@root/utils/types/auth';
 import { FastifyRequest } from 'fastify';
-import { OAuth2Token } from '@fastify/oauth2';
 import { IBcryptClient } from '@root/clients/bcrypt/bcrypt.client.interface';
 import { IJwtClient } from '@root/clients/jwt/jwt.client.interface';
+import { IAxiosClient } from '@root/clients/axios/axios.client.interface';
 import { emailRegex } from '../../../utils/emailRegex';
-import { IAuthService } from './auth.service.interface';
+import { IAuthService, MappedUserInfo } from './auth.service.interface';
 import { app } from '../../../app';
 
 export default class AuthService implements IAuthService {
@@ -14,6 +14,7 @@ export default class AuthService implements IAuthService {
     private readonly userRepo: IUserRepository,
     private readonly bcryptClient: IBcryptClient,
     private readonly jwtClient: IJwtClient,
+    private readonly axiosClient: IAxiosClient,
   ) { }
 
   async signUp(validatedSchema: SignUp): Promise<User> {
@@ -58,13 +59,41 @@ export default class AuthService implements IAuthService {
     return token;
   }
 
-  async facebookSignIn(request: FastifyRequest): Promise<OAuth2Token> {
+  async facebookSignIn(request: FastifyRequest): Promise<MappedUserInfo> {
     const tokenData = await app.facebookOAuth2.getAccessTokenFromAuthorizationCodeFlow(request);
-    return tokenData;
+
+    const USER_INFO_URL: string = 'https://graph.facebook.com/v6.0/me?fields=id,name,email,picture';
+
+    const { data: { name, email, picture: { data: { url } } } } = await this.axiosClient
+      .getWithBearerToken(
+        USER_INFO_URL,
+        tokenData.access_token,
+      );
+
+    return {
+      token: tokenData.access_token,
+      name,
+      email,
+      picture: url,
+    };
   }
 
-  async googleSignIn(request: FastifyRequest): Promise<OAuth2Token> {
+  async googleSignIn(request: FastifyRequest): Promise<MappedUserInfo> {
     const tokenData = await app.googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(request);
-    return tokenData;
+
+    const USER_INFO_URL: string = 'https://www.googleapis.com/oauth2/v2/userinfo';
+
+    const { data: { email, name, picture } } = await this.axiosClient
+      .getWithBearerToken(
+        USER_INFO_URL,
+        tokenData.access_token,
+      );
+
+    return {
+      token: tokenData.access_token,
+      name,
+      email,
+      picture,
+    };
   }
 }

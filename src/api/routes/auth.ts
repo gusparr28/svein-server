@@ -57,10 +57,10 @@ const authRoutes = (fastify: FastifyInstance) => {
 
   fastify.get('/auth/signin/facebook/callback', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
-      const tokenData = await authHandler.facebookSignIn(request);
+      const userInfo = await authHandler.facebookSignIn(request);
       reply.code(200).send({
         status: 200,
-        tokenData,
+        resource: userInfo,
       });
     } catch (e: any) {
       reply.code(500).send({
@@ -72,10 +72,10 @@ const authRoutes = (fastify: FastifyInstance) => {
 
   fastify.get('/auth/signin/google/callback', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
-      const tokenData = await authHandler.googleSignIn(request);
+      const userInfo = await authHandler.googleSignIn(request);
       reply.code(200).send({
         status: 200,
-        tokenData,
+        resource: userInfo,
       });
     } catch (e: any) {
       reply.code(500).send({
