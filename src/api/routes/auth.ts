@@ -1,6 +1,6 @@
+import { UserSignIn, UserSignUp } from '@root/utils/types/auth';
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
-import { UserDto } from '@root/svein/users/dto/user.dto';
-import { SignIn, SignUp } from '@root/utils/types/auth';
+import { RequestUserDto, toDto } from '../../svein/users/domain/user.dto';
 import Schemas from '../../swagger/schemas';
 import AuthHandler from '../handlers/auth/auth.handler';
 
@@ -11,23 +11,15 @@ const authRoutes = (fastify: FastifyInstance) => {
     schema: Schemas.auth.signUp.schema,
   }, async (request: FastifyRequest<{
     Body: {
-      entity: SignUp
+      entity: UserSignUp
     }
   }>, reply: FastifyReply) => {
     const { entity } = request.body;
-
     try {
-      const { id, username, email } = await authHandler.signUp(entity);
-
-      const userDto: UserDto = {
-        id,
-        username,
-        email,
-      };
-
+      const user = await authHandler.signUp(Schemas.auth.signUp.schema, entity);
       reply.code(200).send({
         status: 200,
-        resource: userDto,
+        resource: toDto(user),
       });
     } catch (e: any) {
       reply.code(500).send({
@@ -42,20 +34,80 @@ const authRoutes = (fastify: FastifyInstance) => {
   }, async (
     request: FastifyRequest<{
       Body: {
-        entity: SignIn
+        entity: UserSignIn
       }
     }>,
     reply: FastifyReply,
   ) => {
     const { entity } = request.body;
-
     try {
-      const token = await authHandler.signIn(entity);
+      const token = await authHandler.signIn(Schemas.auth.signIn.schema, entity);
       reply.code(200).send({
         status: 200,
         resource: {
           token,
         },
+      });
+    } catch (e: any) {
+      reply.code(500).send({
+        status: 500,
+        error: e.message,
+      });
+    }
+  });
+
+  fastify.get('/auth/signin/facebook/callback', {
+    schema: {
+      hide: true,
+    },
+  }, async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const userInfo = await authHandler.facebookSignIn(request);
+      reply.code(200).send({
+        status: 200,
+        resource: userInfo,
+      });
+    } catch (e: any) {
+      reply.code(500).send({
+        status: 500,
+        error: e.message,
+      });
+    }
+  });
+
+  fastify.get('/auth/signin/google/callback', {
+    schema: {
+      hide: true,
+    },
+  }, async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const userInfo = await authHandler.googleSignIn(request);
+      reply.code(200).send({
+        status: 200,
+        resource: userInfo,
+      });
+    } catch (e: any) {
+      reply.code(500).send({
+        status: 500,
+        error: e.message,
+      });
+    }
+  });
+
+  fastify.patch('/auth/user/update', {
+    schema: Schemas.auth.update.schema,
+  }, async (request: FastifyRequest<{
+    Body: {
+      entity: RequestUserDto,
+    }
+  }>, reply: FastifyReply) => {
+    const { entity } = request.body;
+
+    try {
+      const updatedUser = await authHandler.update(entity);
+      reply.code(200).send({
+        status: 200,
+        resource: toDto(updatedUser),
       });
     } catch (e: any) {
       reply.code(500).send({

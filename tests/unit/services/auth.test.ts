@@ -1,16 +1,25 @@
-import { SignUp } from '@root/utils/types/auth';
+import { UserSignUp } from '@root/utils/types/auth';
+import { IBcryptClient } from '@root/clients/bcrypt/bcrypt.client.interface';
+import { IJwtClient } from '@root/clients/jwt/jwt.client.interface';
+import { IAxiosClient } from '@root/clients/axios/axios.client.interface';
+import { AxiosClient } from '../../../src/clients/axios/axios.client';
 import { app } from '../../../src/app';
+import { BcryptClient } from '../../../src/clients/bcrypt/bcrypt.client';
+import { JwtClient } from '../../../src/clients/jwt/jwt.client';
 import { MockUserRepository } from '../../__mocks__/repositories/mock.user.repository';
-import { IUserRepository } from '../../../src/svein/users/persistence/repositories/users/user.repository.interface';
+import { IUserRepository } from '../../../src/svein/users/persistence/users/user.repository.interface';
 import { IAuthService } from '../../../src/svein/auth/business/auth.service.interface';
 import AuthService from '../../../src/svein/auth/business/auth.service';
 
 describe('Auth Service', () => {
-  let userToSignUp: SignUp;
+  let userToSignUp: UserSignUp;
   const password: string = '1234';
   let hashedPassword: string;
 
   let mockUserRepository: IUserRepository;
+  let bcryptClient: IBcryptClient;
+  let jwtClient: IJwtClient;
+  let axiosClient: IAxiosClient;
   let authService: IAuthService;
 
   beforeAll(async () => {
@@ -19,7 +28,10 @@ describe('Auth Service', () => {
 
   beforeEach(() => {
     mockUserRepository = new MockUserRepository();
-    authService = new AuthService(mockUserRepository);
+    bcryptClient = new BcryptClient();
+    jwtClient = new JwtClient();
+    axiosClient = new AxiosClient();
+    authService = new AuthService(mockUserRepository, bcryptClient, jwtClient, axiosClient);
 
     userToSignUp = {
       email: 'test@gmail.com',
@@ -42,37 +54,30 @@ describe('Auth Service', () => {
     await expect(authService.signUp(userToSignUp)).rejects.toThrow('Invalid email');
   });
 
-  it('should successfully sign in a user and return a token', async () => {
+  it('should successfully sign in a user with email and return a token', async () => {
     const createdUser = await mockUserRepository.save(userToSignUp);
 
     const { email } = createdUser;
 
     const token = await authService.signIn({
-      email,
+      user: email,
       password,
     });
 
     expect(token).toBeDefined();
   });
 
-  it('should throw a cannot login with username and email at the same time error', async () => {
+  it('should successfully sign in a user with username and return a token', async () => {
     const createdUser = await mockUserRepository.save(userToSignUp);
 
-    const { email, username } = createdUser;
+    const { username } = createdUser;
 
-    await expect(authService.signIn({
-      email,
-      username,
+    const token = await authService.signIn({
+      user: username,
       password,
-    })).rejects.toThrow('Cannot login with username and email at the same time');
-  });
+    });
 
-  it('should throw a cannot login without username or email', async () => {
-    await mockUserRepository.save(userToSignUp);
-
-    await expect(authService.signIn({
-      password,
-    })).rejects.toThrow('Cannot login without username or email');
+    expect(token).toBeDefined();
   });
 
   it('should throw an invalid password error', async () => {
@@ -81,7 +86,7 @@ describe('Auth Service', () => {
     const { email } = createdUser;
 
     await expect(authService.signIn({
-      email,
+      user: email,
       password: '1235',
     })).rejects.toThrow('Invalid password');
   });

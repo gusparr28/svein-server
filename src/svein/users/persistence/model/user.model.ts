@@ -1,5 +1,5 @@
 import { model, Schema } from 'mongoose';
-import { User } from '../entities/user.entity';
+import { User } from '../../domain/model/User';
 
 const userSchema = new Schema<User>({
   email: {
@@ -11,14 +11,24 @@ const userSchema = new Schema<User>({
   },
   username: {
     type: String,
-    required: true,
-    unique: true,
     lowercase: true,
     trim: true,
+    index: {
+      unique: true,
+      partialFilterExpression: {
+        username: {
+          $type: 'string',
+        },
+      },
+    },
   },
   password: {
     type: String,
-    required: true,
+  },
+  context: {
+    type: String,
+    enum: ['svein', 'oauth', 'both'],
+    required: false,
   },
 }, { timestamps: true });
 
