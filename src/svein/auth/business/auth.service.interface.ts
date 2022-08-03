@@ -1,12 +1,14 @@
 import { User } from '@root/svein/users/domain/model/User';
-import { SignIn, SignUp } from '@root/utils/types/auth';
+import { RequestUserDto } from '@root/svein/users/domain/user.dto';
+import { UserSignIn, UserSignUp } from '@root/utils/types/auth';
 import { FastifyRequest } from 'fastify';
 
 export interface IAuthService {
-  signUp(validatedSchema: SignUp): Promise<User>;
-  signIn(validatedSchema: SignIn): Promise<string | undefined>;
+  signUp(userSignUp: UserSignUp): Promise<User>;
+  signIn(userSignIn: UserSignIn): Promise<string>;
   facebookSignIn(request: FastifyRequest): Promise<MappedUserInfo>;
   googleSignIn(request: FastifyRequest): Promise<MappedUserInfo>;
+  update(userDto: RequestUserDto): Promise<User>;
 }
 
 export type MappedUserInfo = {

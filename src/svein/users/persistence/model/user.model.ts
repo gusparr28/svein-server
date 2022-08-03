@@ -11,14 +11,24 @@ const userSchema = new Schema<User>({
   },
   username: {
     type: String,
-    required: true,
-    unique: true,
     lowercase: true,
     trim: true,
+    index: {
+      unique: true,
+      partialFilterExpression: {
+        username: {
+          $type: 'string',
+        },
+      },
+    },
   },
   password: {
     type: String,
-    required: true,
+  },
+  context: {
+    type: String,
+    enum: ['svein', 'oauth', 'both'],
+    required: false,
   },
 }, { timestamps: true });
 

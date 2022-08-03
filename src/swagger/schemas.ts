@@ -13,8 +13,17 @@ interface ISchemas {
     signIn: {
       schema: SchemaType
     }
+    facebookSignIn: {
+      schema: Pick<SchemaType, 'response'>
+    },
+    googleSignIn: {
+      schema: Pick<SchemaType, 'response'>
+    },
+    update: {
+      schema: SchemaType
+    }
   },
-  emptyGet: {
+  ip: {
     schema: Pick<SchemaType, 'response'>
   },
   health: {
@@ -53,12 +62,7 @@ const Schemas: ISchemas = {
       schema: {
         body: {
           entity: Type.Object({
-            email: Type.Optional(
-              Type.String(),
-            ),
-            username: Type.Optional(
-              Type.String(),
-            ),
+            user: Type.String(),
             password: Type.String(),
           }),
         },
@@ -76,8 +80,71 @@ const Schemas: ISchemas = {
         },
       },
     },
+    facebookSignIn: {
+      schema: {
+        response: {
+          200: {
+            description: 'Object with Facebook user\'s information',
+            type: 'object',
+            properties: {
+              status: Type.Number(),
+              resource: Type.Object({
+                token: Type.String(),
+                name: Type.String(),
+                email: Type.String(),
+                picture: Type.String(),
+              }),
+            },
+          },
+        },
+      },
+    },
+    googleSignIn: {
+      schema: {
+        response: {
+          200: {
+            description: 'Object with Google user\'s information',
+            type: 'object',
+            properties: {
+              status: Type.Number(),
+              resource: Type.Object({
+                token: Type.String(),
+                name: Type.String(),
+                email: Type.String(),
+                picture: Type.String(),
+              }),
+            },
+          },
+        },
+      },
+    },
+    update: {
+      schema: {
+        body: {
+          entity: Type.Object({
+            email: Type.String(),
+            username: Type.String(),
+            password: Type.String(),
+          }),
+        },
+        response: {
+          200: {
+            description: 'Object with updated user\'s information',
+            type: 'object',
+            properties: {
+              status: Type.Number(),
+              resource: Type.Object({
+                id: Type.String(),
+                username: Type.String(),
+                email: Type.String(),
+              }),
+            },
+          },
+        },
+      },
+    },
   },
-  emptyGet: {
+  ip: {
     schema: {
       response: {
         200: {

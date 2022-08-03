@@ -1,4 +1,4 @@
-import { SignUp } from '@root/utils/types/auth';
+import { UserSignUp } from '@root/utils/types/auth';
 import { IBcryptClient } from '@root/clients/bcrypt/bcrypt.client.interface';
 import { IJwtClient } from '@root/clients/jwt/jwt.client.interface';
 import { IAxiosClient } from '@root/clients/axios/axios.client.interface';
@@ -12,7 +12,7 @@ import { IAuthService } from '../../../src/svein/auth/business/auth.service.inte
 import AuthService from '../../../src/svein/auth/business/auth.service';
 
 describe('Auth Service', () => {
-  let userToSignUp: SignUp;
+  let userToSignUp: UserSignUp;
   const password: string = '1234';
   let hashedPassword: string;
 
@@ -54,37 +54,30 @@ describe('Auth Service', () => {
     await expect(authService.signUp(userToSignUp)).rejects.toThrow('Invalid email');
   });
 
-  it('should successfully sign in a user and return a token', async () => {
+  it('should successfully sign in a user with email and return a token', async () => {
     const createdUser = await mockUserRepository.save(userToSignUp);
 
     const { email } = createdUser;
 
     const token = await authService.signIn({
-      email,
+      user: email,
       password,
     });
 
     expect(token).toBeDefined();
   });
 
-  it('should throw a cannot login with username and email at the same time error', async () => {
+  it('should successfully sign in a user with username and return a token', async () => {
     const createdUser = await mockUserRepository.save(userToSignUp);
 
-    const { email, username } = createdUser;
+    const { username } = createdUser;
 
-    await expect(authService.signIn({
-      email,
-      username,
+    const token = await authService.signIn({
+      user: username,
       password,
-    })).rejects.toThrow('Cannot login with username and email at the same time');
-  });
+    });
 
-  it('should throw a cannot login without username or email', async () => {
-    await mockUserRepository.save(userToSignUp);
-
-    await expect(authService.signIn({
-      password,
-    })).rejects.toThrow('Cannot login without username or email');
+    expect(token).toBeDefined();
   });
 
   it('should throw an invalid password error', async () => {
@@ -93,7 +86,7 @@ describe('Auth Service', () => {
     const { email } = createdUser;
 
     await expect(authService.signIn({
-      email,
+      user: email,
       password: '1235',
     })).rejects.toThrow('Invalid password');
   });

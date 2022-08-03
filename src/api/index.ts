@@ -17,7 +17,7 @@ app.register(async (fastify: FastifyInstance) => {
   // verifyJwt(fastify);
 
   fastify.get('/', {
-    schema: Schemas.emptyGet.schema,
+    schema: Schemas.ip.schema,
   }, (request: FastifyRequest, reply: FastifyReply) => {
     reply.code(200).send({
       status: 200,

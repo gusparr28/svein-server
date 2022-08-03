@@ -1,11 +1,10 @@
-export type SignUp = {
+export type UserSignUp = {
   email: string;
   username: string;
   password: string;
 };
 
-export type SignIn = {
-  email?: string;
-  username?: string;
+export type UserSignIn = {
+  user: string;
   password: string;
 };

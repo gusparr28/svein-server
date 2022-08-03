@@ -1,8 +1,9 @@
 import { IAuthService, MappedUserInfo } from '@root/svein/auth/business/auth.service.interface';
 import { User } from '@root/svein/users/domain/model/User';
 import { SchemaType } from '@root/swagger/schemas';
-import { RequestUserDto } from '@root/svein/users/domain/user.dto';
 import { FastifyRequest } from 'fastify';
+import { UserSignIn, UserSignUp } from '@root/utils/types/auth';
+import { RequestUserDto } from '@root/svein/users/domain/user.dto';
 import { AxiosClient } from '../../../clients/axios/axios.client';
 import { BcryptClient } from '../../../clients/bcrypt/bcrypt.client';
 import { JwtClient } from '../../../clients/jwt/jwt.client';
@@ -17,14 +18,14 @@ export default class AuthHandler {
     private readonly ajvClient: IAjvClient,
   ) { }
 
-  async signUp(schema: SchemaType, userDto: RequestUserDto): Promise<User> {
-    this.ajvClient.validateSchema(schema.body, userDto);
-    return this.authService.signUp(userDto);
+  async signUp(schema: SchemaType, userSignUp: UserSignUp): Promise<User> {
+    this.ajvClient.validateSchema(schema.body, userSignUp);
+    return this.authService.signUp(userSignUp);
   }
 
-  async signIn(schema: SchemaType, userDto: RequestUserDto): Promise<string | undefined> {
-    this.ajvClient.validateSchema(schema.body, userDto);
-    return this.authService.signIn(userDto);
+  async signIn(schema: SchemaType, userSignIn: UserSignIn): Promise<string> {
+    this.ajvClient.validateSchema(schema.body, userSignIn);
+    return this.authService.signIn(userSignIn);
   }
 
   async facebookSignIn(request: FastifyRequest): Promise<MappedUserInfo> {
@@ -33,6 +34,10 @@ export default class AuthHandler {
 
   async googleSignIn(request: FastifyRequest): Promise<MappedUserInfo> {
     return this.authService.googleSignIn(request);
+  }
+
+  async update(userDto: RequestUserDto): Promise<User> {
+    return this.authService.update(userDto);
   }
 
   public static instance(): AuthHandler {

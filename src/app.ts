@@ -6,6 +6,7 @@ import oauth2, { OAuth2Namespace } from '@fastify/oauth2';
 import fastifySwagger from '@fastify/swagger';
 import fastifyBasicAuth from '@fastify/basic-auth';
 import validate from './swagger/validate';
+import Schemas from './swagger/schemas';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -94,6 +95,7 @@ app.register(oauth2, {
   },
   startRedirectPath: '/auth/signin/facebook',
   callbackUri: 'http://localhost:3000/auth/signin/facebook/callback',
+  schema: Schemas.auth.facebookSignIn.schema,
 });
 
 app.register(oauth2, {
@@ -108,4 +110,5 @@ app.register(oauth2, {
   },
   startRedirectPath: '/auth/signin/google',
   callbackUri: 'http://localhost:3000/auth/signin/google/callback',
+  schema: Schemas.auth.googleSignIn.schema,
 });
