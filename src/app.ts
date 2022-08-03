@@ -26,6 +26,11 @@ const validatedHost: string = NODE_ENV === 'development' ? `localhost:${PORT!}` 
 
 const exposeRoute: boolean = NODE_ENV === 'development' ? true : NODE_ENV === 'staging';
 
+const handleCallbackUri = (context: string): string => (NODE_ENV === 'development' ? `http://localhost:${PORT!}/auth/signin/${context}/callback`
+  : NODE_ENV === 'staging'
+    ? `https://${STAGING_URL}/auth/signin/${context}/callback`
+    : `https://${PRODUCTION_URL}/auth/signin/${context}/callback`);
+
 export const port = PORT;
 
 export const app: FastifyInstance = Fastify({
@@ -94,7 +99,7 @@ app.register(oauth2, {
     auth: oauth2.FACEBOOK_CONFIGURATION,
   },
   startRedirectPath: '/auth/signin/facebook',
-  callbackUri: 'http://localhost:3000/auth/signin/facebook/callback',
+  callbackUri: handleCallbackUri('facebook'),
   schema: Schemas.auth.facebookSignIn.schema,
 });
 
@@ -109,6 +114,6 @@ app.register(oauth2, {
     auth: oauth2.GOOGLE_CONFIGURATION,
   },
   startRedirectPath: '/auth/signin/google',
-  callbackUri: 'http://localhost:3000/auth/signin/google/callback',
+  callbackUri: handleCallbackUri('google'),
   schema: Schemas.auth.googleSignIn.schema,
 });
